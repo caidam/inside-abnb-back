@@ -16,8 +16,11 @@ services:
       - "5432"
 
   api-abnb:
-    image: caidam/api-abnb 
+    # image: caidam/api-abnb 
+    build: .
     container_name: api-abnb
+    volumes:
+      - ./:/app # Sync local directory with container
     ports:
       - "5000:80"
       - "8443:443"
