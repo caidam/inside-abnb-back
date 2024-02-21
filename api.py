@@ -12,7 +12,7 @@ api = Api(app)
 # RESOURCE CLASSES
 class HelloWorld(Resource):
     def get(self):
-        return {'hello': 'This is a Flask API.'}
+        return {'hello': 'This is a Flask API. I have been updated !'}
 
 class Get5Listings(Resource):
     def get(self):
