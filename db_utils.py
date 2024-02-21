@@ -6,7 +6,7 @@ def create_db_engine():
     db_user = config('POSTGRES_USER')
     db_password = config('POSTGRES_PASSWORD')
     db_name = config('POSTGRES_DB')
-    db_host = "51.44.20.166" #config('POSTGRES_SERVICE_IP')
+    db_host = config('POSTGRES_SERVICE_IP') # "51.44.20.166" #
     db_port = config('POSTGRES_PORT')
 
     db_uri = f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
