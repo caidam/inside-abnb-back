@@ -1,14 +1,14 @@
 
 import pandas as pd
-from db_utils import create_db_engine, create_duckdb_engine
+from db_utils import create_db_engine
 
-def execute_query(sql_query, engine_type='default', *params):
+def execute_query(sql_query, *params):
 
 
-    if engine_type == 'duckdb':
-        engine = create_duckdb_engine()
-    else:
-        engine = create_db_engine()
+    # if engine_type == 'duckdb':
+    #     engine = create_duckdb_engine()
+    # else:
+    engine = create_db_engine()
     
     
     with engine.connect() as connection:
@@ -23,12 +23,12 @@ def execute_query(sql_query, engine_type='default', *params):
 #         json_data = df.to_json(orient='records')
 #     return json_data
 
-def execute_query_3(sql_query, engine_type='default', *params):
+def execute_query_3(sql_query, *params):
 
-    if engine_type == 'duckdb':
-        engine = create_duckdb_engine()
-    else:
-        engine = create_db_engine()
+    # if engine_type == 'duckdb':
+    #     engine = create_duckdb_engine()
+    # else:
+    engine = create_db_engine()
 
 
     with engine.connect() as connection:

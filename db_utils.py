@@ -14,16 +14,16 @@ def create_db_engine():
 
     return engine
 
-def create_duckdb_engine():
+# def create_duckdb_engine():
 
-    token = config('MOTHERDUCK_TOKEN')
-    database = config('MOTHERDUCK_DB')
+#     token = config('MOTHERDUCK_TOKEN')
+#     database = config('MOTHERDUCK_DB')
 
-    db_uri = f"duckdb:///md:{database}?motherduck_token={token}"
+#     db_uri = f"duckdb:///md:{database}?motherduck_token={token}"
 
-    engine = create_engine(db_uri)
+#     engine = create_engine(db_uri)
 
-    return engine
+#     return engine
 
 # if __name__ == "__main__" :
 
