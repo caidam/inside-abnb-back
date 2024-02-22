@@ -1,9 +1,16 @@
 
 import pandas as pd
-from db_utils import create_db_engine
+from db_utils import create_db_engine, create_duckdb_engine
 
-def execute_query(sql_query, *params):
-    engine = create_db_engine()
+def execute_query(sql_query, engine_type='default', *params):
+
+
+    if engine_type == 'duckdb':
+        engine = create_duckdb_engine()
+    else:
+        engine = create_db_engine()
+    
+    
     with engine.connect() as connection:
         df = pd.read_sql_query(sql_query, connection, params=params)
         json_data = df.to_json(orient='records')
@@ -16,8 +23,14 @@ def execute_query(sql_query, *params):
 #         json_data = df.to_json(orient='records')
 #     return json_data
 
-def execute_query_3(sql_query, *params):
-    engine = create_db_engine()
+def execute_query_3(sql_query, engine_type='default', *params):
+
+    if engine_type == 'duckdb':
+        engine = create_duckdb_engine()
+    else:
+        engine = create_db_engine()
+
+
     with engine.connect() as connection:
         if isinstance(params[0], tuple):
             params = params[0]
@@ -26,8 +39,8 @@ def execute_query_3(sql_query, *params):
     return json_data
 
 def get_5_listings():
-    sql_query = "select * from listings limit 5"
-    return execute_query(sql_query)
+    sql_query = "select * from raw.listings limit 5"
+    return execute_query(sql_query, 'duckdb')
 
 def get_cities():
     sql_query = """
@@ -54,7 +67,7 @@ def get_markers(city='Paris', neighbourhood=None):
     where city = %s
     and neighbourhood = coalesce(%s, neighbourhood)
     order by number_of_reviews_ltm desc
-    limit 2000
+    -- limit 2000
     """
     return execute_query_3(sql_query, (city, neighbourhood))
 

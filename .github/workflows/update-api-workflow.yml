@@ -24,6 +24,8 @@ jobs:
           echo "POSTGRES_SERVICE_IP=${{ secrets.POSTGRES_SERVICE_IP }}" >> $GITHUB_WORKSPACE/.env
           echo "DEBUG=${{ secrets.DEBUG }}" >> $GITHUB_WORKSPACE/.env
           echo "DATA_URL=${{ secrets.DATA_URL }}" >> $GITHUB_WORKSPACE/.env
+          echo "MOTHERDUCK_DB=${{ secrets.MOTHERDUCK_DB }}" >> $GITHUB_WORKSPACE/.env
+          echo "MOTHERDUCK_TOKEN=${{ secrets.MOTHERDUCK_TOKEN }}" >> $GITHUB_WORKSPACE/.env
           # Add more lines if necessary
 
       - name: Log in to Docker Hub

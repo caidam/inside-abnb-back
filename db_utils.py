@@ -14,16 +14,27 @@ def create_db_engine():
 
     return engine
 
-if __name__ == "__main__" :
+def create_duckdb_engine():
 
-    engine = create_db_engine()
+    token = config('MOTHERDUCK_TOKEN')
+    database = config('MOTHERDUCK_DB')
 
-    df = pd.read_csv(config('FILE_URL'))
+    db_uri = f"duckdb:///md:{database}?motherduck_token={token}"
 
-    try:
+    engine = create_engine(db_uri)
 
-        with engine.connect() as connection:
-            df.to_sql('datastats', engine, if_exists='replace', index=False)
+    return engine
+
+# if __name__ == "__main__" :
+
+#     engine = create_db_engine()
+
+#     df = pd.read_csv(config('FILE_URL'))
+
+#     try:
+
+#         with engine.connect() as connection:
+#             df.to_sql('datastats', engine, if_exists='replace', index=False)
         
-    except Exception as e:
-        print(f"Error: {e}")
+#     except Exception as e:
+#         print(f"Error: {e}")
