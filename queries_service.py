@@ -39,7 +39,7 @@ def execute_query_3(sql_query, engine_type='default', *params):
     return json_data
 
 def get_5_listings():
-    sql_query = "select * from raw.listings limit 5"
+    sql_query = "select 1" #"select * from raw.listings limit 5"
     return execute_query(sql_query, 'duckdb')
 
 def get_cities():
