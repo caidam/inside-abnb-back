@@ -56,6 +56,11 @@ class GetCityKpis(Resource):
         json_data = queries_service.get_city_kpis(city, neighbourhood)
         return Response(response=json_data, status=200, content_type='application/json')
 
+class GetTopHosts(Resource):
+    def get(self, city='Paris', neighbourhood=None):
+        json_data = queries_service.get_top_hosts(city, neighbourhood)
+        return Response(response=json_data, status=200, content_type='application/json')
+
 # class GetTopSkills(Resource):
 #     def get(self, job_search=None):
 #         json_data = queries_service.get_top_skills_data(job_search)
@@ -74,6 +79,7 @@ api.add_resource(GetCity, '/city/', '/city/<string:city>')
 api.add_resource(GetMarkers, '/markers/', '/markers/<string:city>', '/markers/<string:city>/<string:neighbourhood>')
 api.add_resource(GetNeighbourhoods, '/neighbourhoods/', '/neighbourhoods/<string:city>')
 api.add_resource(GetCityKpis, '/city_kpis/', '/city_kpis/<string:city>', '/city_kpis/<string:city>/<string:neighbourhood>')
+api.add_resource(GetTopHosts, '/top_hosts/', '/top_hosts/<string:city>', '/top_hosts/<string:city>/<string:neighbourhood>')
 # api.add_resource(GetTopSkills, '/top_skills', '/top_skills/<string:job_search>')
 # api.add_resource(GetTop5Jobs, '/top_5_jobs')
 

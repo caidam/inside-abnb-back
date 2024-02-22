@@ -39,8 +39,8 @@ def execute_query_3(sql_query, engine_type='default', *params):
     return json_data
 
 def get_5_listings():
-    sql_query = "select 1" #"select * from raw.listings limit 5"
-    return execute_query(sql_query, 'duckdb')
+    sql_query = "select * from listings limit 5"
+    return execute_query(sql_query)
 
 def get_cities():
     sql_query = """
@@ -91,6 +91,24 @@ def get_city_kpis(city='Paris', neighbourhood='None'):
     where city = %s
     and neighbourhood = coalesce(%s, neighbourhood)
     order by city, is_total desc, neighbourhood
+    """
+    return execute_query_3(sql_query, (city, neighbourhood))
+
+def get_top_hosts(city='Paris', neighbourhood='None'):
+    # Use COALESCE to handle NULL values and provide a default value ('%') if job_search is not provided
+    sql_query = """
+    select 
+        host_name,
+        count(distinct case when room_type = 'Entire home/apt' then id else 0 end) as entire_homes_apts,
+        count(distinct case when room_type = 'Hotel room' then id else 0 end) as hotel_rooms,
+        count(distinct case when room_type = 'Private room' then id else 0 end) as private_rooms,
+        count(distinct case when room_type = 'Shared room' then id else 0 end) as shared_rooms,
+        count(distinct id) as nb_listings
+    from listings
+    where city = %s
+    and neighbourhood = coalesce(%s, neighbourhood)
+    group by 1
+    order by 6 desc
     """
     return execute_query_3(sql_query, (city, neighbourhood))
 
