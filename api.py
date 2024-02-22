@@ -4,6 +4,7 @@ from flask_cors import CORS
 from flask_restful import Resource, Api
 import queries_service
 from decouple import config
+import logging
 
 app = Flask(__name__)
 CORS(app)
@@ -14,10 +15,21 @@ class HelloWorld(Resource):
     def get(self):
         return {'hello': 'This is a Flask API.'}
 
+# class Get5Listings(Resource):
+#     def get(self):
+#         json_data = queries_service.get_5_listings()
+#         return Response(response=json_data, status=200, content_type='application/json')
+    
 class Get5Listings(Resource):
     def get(self):
-        json_data = queries_service.get_5_listings()
-        return Response(response=json_data, status=200, content_type='application/json')
+        try:
+            logging.info("Get5Listings API called")
+            json_data = queries_service.get_5_listings()
+            logging.info("Successfully retrieved data from Motherduck database")
+            return Response(response=json_data, status=200, content_type='application/json')
+        except Exception as e:
+            logging.error(f"Error in Get5Listings: {e}")
+            return Response(response='{"error": "An error occurred"}', status=500, content_type='application/json')
 
 class GetCities(Resource):
     def get(self):
