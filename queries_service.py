@@ -67,7 +67,7 @@ def get_markers(city='Paris', neighbourhood=None):
     where city = %s
     and neighbourhood = coalesce(%s, neighbourhood)
     order by number_of_reviews_ltm desc
-    limit 2000
+    limit 1500
     """
     return execute_query_3(sql_query, (city, neighbourhood))
 
