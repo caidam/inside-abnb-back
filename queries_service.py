@@ -99,10 +99,10 @@ def get_top_hosts(city='Paris', neighbourhood='None'):
     sql_query = """
     select 
         host_name,
-        count(distinct case when room_type = 'Entire home/apt' then id else 0 end) as entire_homes_apts,
-        count(distinct case when room_type = 'Hotel room' then id else 0 end) as hotel_rooms,
-        count(distinct case when room_type = 'Private room' then id else 0 end) as private_rooms,
-        count(distinct case when room_type = 'Shared room' then id else 0 end) as shared_rooms,
+        sum(case when room_type = 'Entire home/apt' then 1 else 0 end) as entire_homes_apts,
+        sum(case when room_type = 'Hotel room' then 1 else 0 end) as hotel_rooms,
+        sum(case when room_type = 'Private room' then 1 else 0 end) as private_rooms,
+        sum(case when room_type = 'Shared room' then 1 else 0 end) as shared_rooms,
         count(distinct id) as nb_listings,
         host_id
     from listings
