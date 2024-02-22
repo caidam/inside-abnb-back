@@ -8,7 +8,7 @@ import logging
 
 app = Flask(__name__)
 CORS(app)
-api = Api(app, origins=['https://caidam.github.io', 'http://localhost:5000'])
+api = Api(app, origins=['https://caidam.github.io/*'])
 
 # RESOURCE CLASSES
 class HelloWorld(Resource):
