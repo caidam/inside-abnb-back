@@ -103,11 +103,13 @@ def get_top_hosts(city='Paris', neighbourhood='None'):
         count(distinct case when room_type = 'Hotel room' then id else 0 end) as hotel_rooms,
         count(distinct case when room_type = 'Private room' then id else 0 end) as private_rooms,
         count(distinct case when room_type = 'Shared room' then id else 0 end) as shared_rooms,
-        count(distinct id) as nb_listings
+        count(distinct id) as nb_listings,
+        host_id
     from listings
     where city = %s
     and neighbourhood = coalesce(%s, neighbourhood)
-    group by 1
+    and host_name is not null
+    group by host_name, host_id
     order by 6 desc
     """
     return execute_query_3(sql_query, (city, neighbourhood))
