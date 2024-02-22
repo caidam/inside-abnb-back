@@ -111,6 +111,7 @@ def get_top_hosts(city='Paris', neighbourhood='None'):
     and host_name is not null
     group by host_name, host_id
     order by 6 desc
+    limit 100
     """
     return execute_query_3(sql_query, (city, neighbourhood))
 
