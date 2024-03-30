@@ -1,51 +1,25 @@
 
 import pandas as pd
-from db_utils import create_db_engine
+from db_utils import create_bq_client
+from google.cloud import bigquery
 
-def execute_query(sql_query, *params):
-
-
-    # if engine_type == 'duckdb':
-    #     engine = create_duckdb_engine()
-    # else:
-    engine = create_db_engine()
-    
-    
-    with engine.connect() as connection:
-        df = pd.read_sql_query(sql_query, connection, params=params)
-        json_data = df.to_json(orient='records')
-    return json_data
-
-# def execute_query_2(sql_query, *params):
-#     engine = create_db_engine()
-#     with engine.connect() as connection:
-#         df = pd.read_sql_query(sql_query, connection, params=list(params))
-#         json_data = df.to_json(orient='records')
-#     return json_data
-
-def execute_query_3(sql_query, *params):
-
-    # if engine_type == 'duckdb':
-    #     engine = create_duckdb_engine()
-    # else:
-    engine = create_db_engine()
-
-
-    with engine.connect() as connection:
-        if isinstance(params[0], tuple):
-            params = params[0]
-        df = pd.read_sql_query(sql_query, connection, params=params)
-        json_data = df.to_json(orient='records')
+def execute_query(sql_query, params):
+    client = create_bq_client()
+    query_parameters = [bigquery.ScalarQueryParameter(key, "STRING", value) for key, value in params.items()]
+    query_job = client.query(sql_query, job_config=bigquery.QueryJobConfig(query_parameters=query_parameters))
+    df = query_job.to_dataframe()
+    json_data = df.to_json(orient='records')
     return json_data
 
 def get_5_listings():
-    sql_query = "select * from listings limit 5"
+    # sql_query = "select * from adventureworks-warehousing.listings limit 5"
+    sql_query = "SELECT  * FROM adventureworks-warehousing.abnb_raw.listings LIMIT 5"
     return execute_query(sql_query)
 
 def get_cities():
     sql_query = """
     select *
-    from cities
+    from adventureworks-warehousing.abnb_raw.cities
     order by city;
     """
     return execute_query(sql_query)
@@ -54,22 +28,22 @@ def get_city(city='Paris'):
     # Use COALESCE to handle NULL values and provide a default value ('%') if job_search is not provided
     sql_query = """
     select *
-    from cities
-    where city = %s
+    from adventureworks-warehousing.abnb_raw.cities
+    where city = @city
     """
-    return execute_query(sql_query, city)
+    return execute_query(sql_query, {'city' : city})
 
 def get_markers(city='Paris', neighbourhood=None):
     # Use COALESCE to handle NULL values and provide a default value ('%') if job_search is not provided
     sql_query = """
     select *
-    from listings
-    where city = %s
-    and neighbourhood = coalesce(%s, neighbourhood)
+    from adventureworks-warehousing.abnb_raw.listings
+    where city = @city
+    and neighbourhood = coalesce(@neighbourhood, neighbourhood)
     order by number_of_reviews_ltm desc
     limit 3000
     """
-    return execute_query_3(sql_query, (city, neighbourhood))
+    return execute_query(sql_query, {'city' : city, 'neighbourhood' : neighbourhood})
 
 def get_neigbourhoods(city='Paris'):
     # Use COALESCE to handle NULL values and provide a default value ('%') if job_search is not provided
@@ -77,22 +51,22 @@ def get_neigbourhoods(city='Paris'):
     select 
         concat(lower(city), '_', lower(neighbourhood)) as id
         , neighbourhood
-    from city_kpis
-    where city = %s
+    from adventureworks-warehousing.abnb_raw.city_kpis
+    where city = @city
     order by city, is_total desc, neighbourhood
     """
-    return execute_query_3(sql_query, city)
+    return execute_query(sql_query, { 'city' : city })
 
 def get_city_kpis(city='Paris', neighbourhood='None'):
     # Use COALESCE to handle NULL values and provide a default value ('%') if job_search is not provided
     sql_query = """
     select *
-    from city_kpis
-    where city = %s
-    and neighbourhood = coalesce(%s, neighbourhood)
+    from adventureworks-warehousing.abnb_raw.city_kpis
+    where city = @city
+    and neighbourhood = coalesce(@neighbourhood, neighbourhood)
     order by city, is_total desc, neighbourhood
     """
-    return execute_query_3(sql_query, (city, neighbourhood))
+    return execute_query(sql_query, { 'city' : city, 'neighbourhood' : neighbourhood })
 
 def get_top_hosts(city='Paris', neighbourhood='None'):
     # Use COALESCE to handle NULL values and provide a default value ('%') if job_search is not provided
@@ -105,34 +79,12 @@ def get_top_hosts(city='Paris', neighbourhood='None'):
         sum(case when room_type = 'Shared room' then 1 else 0 end) as shared_rooms,
         count(distinct id) as nb_listings,
         host_id
-    from listings
-    where city = %s
-    and neighbourhood = coalesce(%s, neighbourhood)
+    from adventureworks-warehousing.abnb_raw.listings
+    where city = @city
+    and neighbourhood = coalesce(@neighbourhood, neighbourhood)
     and host_name is not null
     group by host_name, host_id
     order by 6 desc
     limit 100
     """
-    return execute_query_3(sql_query, (city, neighbourhood))
-
-# def get_top_skills_data(job_search=None):
-#     # Use COALESCE to handle NULL values and provide a default value ('%') if job_search is not provided
-#     sql_query = """
-#     select technologie, count(*) as nb_offer
-#     from datastats
-#     where job_search = coalesce(%s, job_search)
-#     group by 1
-#     order by 2 desc
-#     limit 10;
-#     """
-#     return execute_query(sql_query, job_search)
-
-# def get_top_5_jobs():
-#     sql_query="""
-#     select job_search, count(*) as nb_jobs
-#     from datastats d 
-#     group by 1
-#     order by 2 desc
-#     limit 5;
-#     """
-#     return execute_query(sql_query)
+    return execute_query(sql_query, { 'city' : city, 'neighbourhood' : neighbourhood })
