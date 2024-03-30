@@ -2,7 +2,7 @@
 from flask import Flask, Response
 from flask_cors import CORS
 from flask_restful import Resource, Api
-import queries_service
+import db_scripts.queries_service as queries_service
 from decouple import config
 import logging
 
@@ -13,12 +13,7 @@ api = Api(app)
 # RESOURCE CLASSES
 class HelloWorld(Resource):
     def get(self):
-        return {'hello': 'This is a Flask API. Updated !'}
-
-# class Get5Listings(Resource):
-#     def get(self):
-#         json_data = queries_service.get_5_listings()
-#         return Response(response=json_data, status=200, content_type='application/json')
+        return {'hello': 'This is a Flask API.'}
     
 class Get5Listings(Resource):
     def get(self):
@@ -85,5 +80,5 @@ api.add_resource(GetTopHosts, '/top_hosts/', '/top_hosts/<string:city>', '/top_h
 
 if __name__ == '__main__':
 
-    app.run(host='0.0.0.0', port=5000, debug=config('DEBUG'))
-    # app.run(host='0.0.0.0', port=80, debug=config('DEBUG')) # test EC2
+    # app.run(host='0.0.0.0', port=5000, debug=config('DEBUG'))
+    app.run(host='0.0.0.0', port=80, debug=config('DEBUG')) # test EC2

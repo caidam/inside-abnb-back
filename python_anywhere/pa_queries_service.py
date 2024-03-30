@@ -1,11 +1,12 @@
-
-import pandas as pd
-from db_utils import create_bq_client
+from pa_db_utils import create_bq_client
 from google.cloud import bigquery
 
-def execute_query(sql_query, params):
+def execute_query(sql_query, params=None):
     client = create_bq_client()
-    query_parameters = [bigquery.ScalarQueryParameter(key, "STRING", value) for key, value in params.items()]
+    if params is not None:
+        query_parameters = [bigquery.ScalarQueryParameter(key, "STRING", value) for key, value in params.items()]
+    else:
+        query_parameters = []
     query_job = client.query(sql_query, job_config=bigquery.QueryJobConfig(query_parameters=query_parameters))
     df = query_job.to_dataframe()
     json_data = df.to_json(orient='records')
@@ -48,7 +49,7 @@ def get_markers(city='Paris', neighbourhood=None):
 def get_neigbourhoods(city='Paris'):
     # Use COALESCE to handle NULL values and provide a default value ('%') if job_search is not provided
     sql_query = """
-    select 
+    select
         concat(lower(city), '_', lower(neighbourhood)) as id
         , neighbourhood
     from adventureworks-warehousing.abnb_raw.city_kpis
@@ -71,7 +72,7 @@ def get_city_kpis(city='Paris', neighbourhood='None'):
 def get_top_hosts(city='Paris', neighbourhood='None'):
     # Use COALESCE to handle NULL values and provide a default value ('%') if job_search is not provided
     sql_query = """
-    select 
+    select
         host_name,
         sum(case when room_type = 'Entire home/apt' then 1 else 0 end) as entire_homes_apts,
         sum(case when room_type = 'Hotel room' then 1 else 0 end) as hotel_rooms,

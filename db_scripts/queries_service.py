@@ -1,6 +1,6 @@
 
 import pandas as pd
-from db_utils import create_db_engine, create_bq_client
+from db_scripts.db_utils import create_db_engine
 
 def execute_query(sql_query, *params):
 
@@ -9,12 +9,6 @@ def execute_query(sql_query, *params):
     with engine.connect() as connection:
         df = pd.read_sql_query(sql_query, connection, params=params)
         json_data = df.to_json(orient='records')
-    return json_data
-
-def execute_bigquery(sql_query):
-    client = create_bq_client()
-    df = client.query(sql_query).to_dataframe()
-    json_data = df.to_json(orient='records')
     return json_data
 
 def execute_query_3(sql_query, *params):
@@ -31,7 +25,6 @@ def execute_query_3(sql_query, *params):
 
 def get_5_listings():
     sql_query = "select * from listings limit 5"
-    # sql_query = "SELECT  * FROM adventureworks-warehousing.abnb_raw.listings LIMIT 5"
     return execute_query(sql_query)
 
 def get_cities():
