@@ -85,5 +85,5 @@ api.add_resource(GetTopHosts, '/top_hosts/', '/top_hosts/<string:city>', '/top_h
 
 if __name__ == '__main__':
 
-    # app.run(host='0.0.0.0', port=5000, debug=config('DEBUG'))
-    app.run(host='0.0.0.0', port=80, debug=config('DEBUG')) # test EC2
+    app.run(host='0.0.0.0', port=5000, debug=config('DEBUG'))
+    # app.run(host='0.0.0.0', port=80, debug=config('DEBUG')) # test EC2
